@@ -1,4 +1,5 @@
 require "CanCanCanSee/version"
+require 'pry'
 
 module CanCanCanSee
 
@@ -6,22 +7,15 @@ module CanCanCanSee
 
   def self.initiate_gem
 
-    user_answer = "none"
-
-    while user_answer.downcase != "single" && user_answer.downcase != "multiple"
-      # puts "Single or multiple ability file?"
-      user_answer = "multiple"
-    end
-
-    type = user_answer
+    configuration_file = File.read('config/initializers/cancancansee.rb')
 
 
-    if type == "single"
+    if configuration_file.include?("abilities_type = single")
 
       my_file = File.read('app/models/ability.rb') # for single
       read_file(my_file)
 
-    elsif type == "multiple"
+    elsif configuration_file.include?("abilities_type = multiple")
 
       my_arr = []
 
@@ -63,7 +57,7 @@ module CanCanCanSee
       counter = 0
       roles = @current_file.scan(/when(.*)($|[ do])/)
       roles.map! { |item| item.to_s.gsub(/[^0-9a-z ]/i, '') }
-      roles.map! { |item| item[1..-1]}
+      roles.map! { |item| item[1..-2]}
 
       role_count = roles.length
       chunk_start = /when/ =~ @current_file
@@ -94,7 +88,7 @@ module CanCanCanSee
         array_of_can = []
 
         #establish can
-        can_abilities = all_text[roles[new_counter]].scan(/can (.*)($|[ do])/)
+        can_abilities = all_text[roles[new_counter]].scan(/can (.*)\n/)
 
         can_abilities.each do |can_ability|
           can_ability = can_ability[0]
@@ -105,7 +99,7 @@ module CanCanCanSee
         array_of_cannot = []
 
         #establish cannot
-        cannot_abilities = all_text[roles[new_counter]].scan(/cannot(.*)($|[ do])/)
+        cannot_abilities = all_text[roles[new_counter]].scan(/cannot(.*)\n/)
 
         cannot_abilities.each do |cannot_ability|
           cannot_ability = cannot_ability[0]
@@ -133,6 +127,9 @@ module CanCanCanSee
 
         can_abilities.each do |can_ability|
           can_ability = can_ability[0]
+          if can_ability.include?("do")
+            can_ability =  "#{/(.*) do/.match(can_ability)[1]} WITH BLOCK"
+          end
           array_of_can << can_ability.gsub(/[^0-9a-z ]/i, '')
         end
 
@@ -144,6 +141,9 @@ module CanCanCanSee
 
         cannot_abilities.each do |cannot_ability|
           cannot_ability = cannot_ability[0]
+          if cannot_ability.include?("do")
+            cannot_ability =  "#{/(.*) do/.match(cannot_ability)[1]} WITH BLOCK"
+          end
           array_of_cannot << cannot_ability.gsub(/[^0-9a-z ]/i, '')
         end
 
@@ -158,9 +158,9 @@ module CanCanCanSee
 
   #public methods
 
-  def self.all_roles
+  def self.all_roles(desired_slug=nil)
     initiate_gem
-    return MY_GLOBAL_HOLDER_OF_ABILITY.keys
+    return MY_GLOBAL_HOLDER_OF_ABILITY[desired_slug].keys
 
   end
 

@@ -1,6 +1,6 @@
 # CanCanCanSee
 
-#THIS GEM IS IN DEVELOPMENT AND NOT RUNNING YET
+Read-only access to roles and abilities with CanCancan. Note: Since this relies on regex-magic at the moment, it requires a particular formatting that will be further articulated upon in future docs.
 
 ## Installation
 
@@ -20,13 +20,40 @@ Or install it yourself as:
 
 ## Usage
 
-N/A
+Your `Ability.rb` file should use a `case/when` statement for different roles and abilities for this to work.
+
+Create a `config/initializers/cancancansee.rb` file, and if you have a normal Ability.rb file include:
+
+`abilities_type = single`
+
+And if you have a custom multiple Ability.rb setup include:
+
+`abilities_type = multiple`
+
+Then, anywhere in your code or CLI, you have access to this command:
+
+```ruby
+CanCanCanSee.all_abilities
+
+#=> {"RoleOne"=>{"can"=>["manage Object"], "cannot"=>["delete Note", "edit Thing"},
+#=> "RoleTwo"=>{"can"=>["edit User"], "cannot"=>["manage Telephone"]}}
+
+#and if you only want to see abilities for a particular slug under multiple....
+CanCanCanSee.all_abilities[my_slug]
+
+#=> {"my_slug"=>{"RoleOne"=>{"can"=>["manage Object"], "cannot"=>["delete Note", "edit Thing"},
+#=> "RoleTwo"=>{"can"=>["edit User"], "cannot"=>["manage Telephone"]}},
+#=> "my_other_slug"=>{"RoleOne"=>{"can"=>["manage Object"], "cannot"=>["delete Note", "edit Thing"},
+#=> "RoleTwo"=>{"can"=>["edit User"], "cannot"=>["manage Telephone"]}}
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+## TODO Before 1.0
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+* Confirm support for single and multiple Ability.rb files
+* Create docs to show style guidelines to have gem work
+* Create post to show layout for slug-based auth
 
 ## Contributing
 
