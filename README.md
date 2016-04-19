@@ -24,11 +24,11 @@ Your `Ability.rb` file should use a `case/when` statement for different roles an
 
 Create a `config/initializers/cancancansee.rb` file, and if you have a normal Ability.rb file include:
 
-`abilities_type = single`
+`abilities_type = "single"`
 
 And if you have a custom multiple Ability.rb setup include:
 
-`abilities_type = multiple`
+`abilities_type = "multiple"`
 
 Then, anywhere in your code or CLI, you have access to this command:
 

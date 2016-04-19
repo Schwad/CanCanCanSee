@@ -10,12 +10,12 @@ module CanCanCanSee
     configuration_file = File.read('config/initializers/cancancansee.rb')
 
 
-    if configuration_file.include?("abilities_type = single")
+    if configuration_file.include?("single")
 
       my_file = File.read('app/models/ability.rb') # for single
       read_file(my_file)
 
-    elsif configuration_file.include?("abilities_type = multiple")
+    elsif configuration_file.include?("multiple")
 
       my_arr = []
 
