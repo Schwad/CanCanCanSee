@@ -128,12 +128,8 @@ module CanCanCanSee
 
         can_abilities.each do |can_ability|
           can_ability = can_ability[0]
-          if can_ability.include?("do")
-            begin
-              can_ability =  "#{/(.*) do/.match(can_ability)[1]} WITH BLOCK"
-            rescue
-              binding.pry
-            end
+          if can_ability.include?(" do ")
+            can_ability =  "#{/(.*) do/.match(can_ability)[1]} WITH BLOCK"
           end
           array_of_can << can_ability.gsub(/[^0-9a-z ]/i, '')
         end
