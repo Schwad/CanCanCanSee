@@ -46,10 +46,10 @@ module CanCanCanSee
     @current_file = file
 
     #capture in between text
-      chunk_start = /when/ =~ @current_file
-         #=> 119
-       chunk_end = ((/when/ =~ @current_file[(chunk_start + 1)..-1]) + chunk_start)
-         #=> 2554
+      # chunk_start = /when/ =~ @current_file
+      #    #=> 119
+      #  chunk_end = ((/when/ =~ @current_file[(chunk_start + 1)..-1]) + chunk_start)
+      #    #=> 2554
       role_text = @current_file[chunk_start..chunk_end]
 
     #capture all roles
@@ -61,7 +61,7 @@ module CanCanCanSee
 
       role_count = roles.length
       chunk_start = /when/ =~ @current_file
-      chunk_end = /when/ =~ @current_file[(chunk_start + 1)..-1]
+      chunk_end = ((/when/ =~ @current_file[(chunk_start + 1)..-1]) + chunk_start)
       all_text[roles[counter]] = @current_file[chunk_start..chunk_end]
       counter += 1
       while counter < role_count
