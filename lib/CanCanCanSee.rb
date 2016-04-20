@@ -48,7 +48,7 @@ module CanCanCanSee
     #capture in between text
       chunk_start = /when/ =~ @current_file
          #=> 119
-       chunk_end = /when/ =~ @current_file[(chunk_start + 1)..-1]
+       chunk_end = ((/when/ =~ @current_file[(chunk_start + 1)..-1]) + chunk_start)
          #=> 2554
       role_text = @current_file[chunk_start..chunk_end]
 
