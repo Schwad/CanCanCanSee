@@ -73,7 +73,6 @@ module CanCanCanSee
         counter += 1
       end
       #BREAKING NOT PICKING UP REGISTRAR BEFORE HERE
-      binding.pry
     #capture text of ability
       # cannot_abilities = all_text[[" 'Assistant Registrar'"]].scan(/cannot(.*)($|[ do])/)
         #=> [[" :create_csr, Vessel do |vessel|"], [" [:create, :destroy, :update], [SpecificCertificate, PortStateControl, Certificate, Violation,"], [" [:create, :destroy], Document do |d|"], [" :update, Document do |d|"], [" [:create], [GeneratedCertificates::GeneratedCertificate] do |b|"], [" :read, ExternalNotification do |e|"], [" :manual_verified, Vessel do |e|"], [" [:update], SpecificCertificate do |e|"], [" :manage_inspection_resources, Inspection do |inspection|"], [" [:update, :destroy], Vessel do |v|"], [" [:create], MinimumSafeManning do |msm|"], [" [:update], MinimumSafeManning do |msm|"], [" [:create], MlcShipowner do |ms|"], [" [:update, :destroy], MlcShipowner do |ms|"], [" :update_classification_society, Vessel"], [" :upload_original, [GeneratedCertificates::MlcCertificate, GeneratedCertificates::DocOfComplianceCertificate] do |c|"], [" :destroy, [GeneratedCertificates::MlcCertificate, GeneratedCertificates::DmlcCertificate] do |c|"]]
@@ -130,7 +129,11 @@ module CanCanCanSee
         can_abilities.each do |can_ability|
           can_ability = can_ability[0]
           if can_ability.include?("do")
-            can_ability =  "#{/(.*) do/.match(can_ability)[1]} WITH BLOCK"
+            begin
+              can_ability =  "#{/(.*) do/.match(can_ability)[1]} WITH BLOCK"
+            rescue
+              binding.pry
+            end
           end
           array_of_can << can_ability.gsub(/[^0-9a-z ]/i, '')
         end
