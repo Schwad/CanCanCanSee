@@ -67,7 +67,11 @@ module CanCanCanSee
       while counter < role_count
         chunk_start = chunk_end + 1
         #broke here
-        chunk_end = ((/when/ =~ @current_file[(chunk_start + 1)..-1]) + chunk_start)
+        begin
+          chunk_end = ((/when/ =~ @current_file[(chunk_start + 1)..-1]) + chunk_start)
+        rescue
+          binding.pry
+        end
         all_text[roles[counter]] = @current_file[chunk_start..chunk_end]
 
         counter += 1
