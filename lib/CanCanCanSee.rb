@@ -1,5 +1,5 @@
 require "CanCanCanSee/version"
-
+require 'pry'
 module CanCanCanSee
 
   MY_GLOBAL_HOLDER_OF_ABILITY = Hash.new
@@ -65,12 +65,14 @@ module CanCanCanSee
       counter += 1
       while counter < role_count
         chunk_start = chunk_end + 1
+        #broke here
         chunk_end = /when/ =~ @current_file[(chunk_start + 1)..-1]
         all_text[roles[counter]] = @current_file[chunk_start..chunk_end]
 
         counter += 1
       end
-
+      #BREAKING NOT PICKING UP REGISTRAR BEFORE HERE
+      binding.pry
     #capture text of ability
       # cannot_abilities = all_text[[" 'Assistant Registrar'"]].scan(/cannot(.*)($|[ do])/)
         #=> [[" :create_csr, Vessel do |vessel|"], [" [:create, :destroy, :update], [SpecificCertificate, PortStateControl, Certificate, Violation,"], [" [:create, :destroy], Document do |d|"], [" :update, Document do |d|"], [" [:create], [GeneratedCertificates::GeneratedCertificate] do |b|"], [" :read, ExternalNotification do |e|"], [" :manual_verified, Vessel do |e|"], [" [:update], SpecificCertificate do |e|"], [" :manage_inspection_resources, Inspection do |inspection|"], [" [:update, :destroy], Vessel do |v|"], [" [:create], MinimumSafeManning do |msm|"], [" [:update], MinimumSafeManning do |msm|"], [" [:create], MlcShipowner do |ms|"], [" [:update, :destroy], MlcShipowner do |ms|"], [" :update_classification_society, Vessel"], [" :upload_original, [GeneratedCertificates::MlcCertificate, GeneratedCertificates::DocOfComplianceCertificate] do |c|"], [" :destroy, [GeneratedCertificates::MlcCertificate, GeneratedCertificates::DmlcCertificate] do |c|"]]
