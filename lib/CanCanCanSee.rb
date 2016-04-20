@@ -1,5 +1,4 @@
 require "CanCanCanSee/version"
-require 'pry'
 
 module CanCanCanSee
 
@@ -161,6 +160,11 @@ module CanCanCanSee
   def self.all_roles(desired_slug=nil)
     initiate_gem
     return MY_GLOBAL_HOLDER_OF_ABILITY[desired_slug].keys
+
+  end
+
+  def self.establish_variable
+    initiate_gem
 
   end
 
