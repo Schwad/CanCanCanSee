@@ -2,7 +2,7 @@ require "CanCanCanSee/version"
 
 module CanCanCanSee
   require 'CanCanCanSee/railtie' if defined?(Rails)
-  
+
   MY_GLOBAL_HOLDER_OF_ABILITY = Hash.new
 
   def self.initiate_gem
@@ -67,7 +67,7 @@ module CanCanCanSee
       while counter < role_count
         chunk_start = chunk_end + 1
         #broke here
-        chunk_end = /when/ =~ @current_file[(chunk_start + 1)..-1]
+        chunk_end = ((/when/ =~ @current_file[(chunk_start + 1)..-1]) + chunk_start)
         all_text[roles[counter]] = @current_file[chunk_start..chunk_end]
 
         counter += 1
@@ -101,7 +101,7 @@ module CanCanCanSee
         array_of_cannot = []
 
         #establish cannot
-        cannot_abilities = all_text[roles[new_counter]].scan(/cannot(.*)\n/)
+        cannot_abilities = all_text[roles[new_counter]].scan(/cannot (.*)\n/)
 
         cannot_abilities.each do |cannot_ability|
           cannot_ability = cannot_ability[0]

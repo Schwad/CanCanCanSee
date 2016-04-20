@@ -52,11 +52,12 @@ CanCanCanSee.all_abilities[my_slug]
 ## TODO Before 1.0
 
 * Cleanup needed for single
-* Pretty Print CLI or something like rake abilities for cli! 
+* Pretty Print CLI or something like rake abilities for cli!
 * Confirm support for single and multiple Ability.rb files
 * Capture blocks passed to abilities as well and store and render them instead of just signifying 'with block'
 * Create docs to show style guidelines to have gem work
 * Create post to show layout for slug-based auth
+* Rake support for `cancancansee:abilities`
 
 ## Contributing
 
