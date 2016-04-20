@@ -1,7 +1,8 @@
 require "CanCanCanSee/version"
-require 'pry'
-module CanCanCanSee
 
+module CanCanCanSee
+  require 'CanCanCanSee/railtie' if defined?(Rails)
+  
   MY_GLOBAL_HOLDER_OF_ABILITY = Hash.new
 
   def self.initiate_gem
