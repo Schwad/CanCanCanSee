@@ -1,4 +1,5 @@
 require "CanCanCanSee/version"
+require 'pry'
 
 module CanCanCanSee
   require 'CanCanCanSee/railtie' if defined?(Rails)
@@ -42,15 +43,7 @@ module CanCanCanSee
 
   def self.read_file(file, check_slug=nil)
 
-
     @current_file = file
-
-    #capture in between text
-      # chunk_start = /when/ =~ @current_file
-      #    #=> 119
-      #  chunk_end = ((/when/ =~ @current_file[(chunk_start + 1)..-1]) + chunk_start)
-      #    #=> 2554
-      # role_text = @current_file[chunk_start..chunk_end]
 
     #capture all roles
       all_text = Hash.new
@@ -67,22 +60,15 @@ module CanCanCanSee
       while counter < role_count
         chunk_start = chunk_end + 1
         #broke here
-        begin
+        if (/when/ =~ @current_file[(chunk_start + 1)..-1]) == nil
+          chunk_end = @current_file.length - 1 #if there are no more whens
+        else
           chunk_end = ((/when/ =~ @current_file[(chunk_start + 1)..-1]) + chunk_start)
-        rescue
-          binding.pry
         end
         all_text[roles[counter]] = @current_file[chunk_start..chunk_end]
 
         counter += 1
       end
-      #BREAKING NOT PICKING UP REGISTRAR BEFORE HERE
-    #capture text of ability
-      # cannot_abilities = all_text[[" 'Assistant Registrar'"]].scan(/cannot(.*)($|[ do])/)
-        #=> [[" :create_csr, Vessel do |vessel|"], [" [:create, :destroy, :update], [SpecificCertificate, PortStateControl, Certificate, Violation,"], [" [:create, :destroy], Document do |d|"], [" :update, Document do |d|"], [" [:create], [GeneratedCertificates::GeneratedCertificate] do |b|"], [" :read, ExternalNotification do |e|"], [" :manual_verified, Vessel do |e|"], [" [:update], SpecificCertificate do |e|"], [" :manage_inspection_resources, Inspection do |inspection|"], [" [:update, :destroy], Vessel do |v|"], [" [:create], MinimumSafeManning do |msm|"], [" [:update], MinimumSafeManning do |msm|"], [" [:create], MlcShipowner do |ms|"], [" [:update, :destroy], MlcShipowner do |ms|"], [" :update_classification_society, Vessel"], [" :upload_original, [GeneratedCertificates::MlcCertificate, GeneratedCertificates::DocOfComplianceCertificate] do |c|"], [" :destroy, [GeneratedCertificates::MlcCertificate, GeneratedCertificates::DmlcCertificate] do |c|"]]
-        # can_abilities = all_text[[" 'Assistant Registrar'"]].scan(/can (.*)($|[ do])/)
-        #=> [[" :manage, :all"], [" :change_registry, Registry"], ["not :create_csr, Vessel do |vessel|"], ["not [:create, :destroy, :update], [SpecificCertificate, PortStateControl, Certificate, Violation,"], ["not [:create, :destroy], Document do |d|"], ["not :update, Document do |d|"], ["not [:create], [GeneratedCertificates::GeneratedCertificate] do |b|"], ["not :read, ExternalNotification do |e|"], ["not :manual_verified, Vessel do |e|"], ["not [:update], SpecificCertificate do |e|"], [" :manage, Registry do |r|"], [" :manage, [Inspection] do |res|"], ["not :manage_inspection_resources, Inspection do |inspection|"], [" :print_history, Vessel"], ["not [:update, :destroy], Vessel do |v|"], ["not [:create], MinimumSafeManning do |msm|"], ["not [:update], MinimumSafeManning do |msm|"], ["not [:create], MlcShipowner do |ms|"], ["not [:update, :destroy], MlcShipowner do |ms|"], ["not :update_classification_society, Vessel"], ["not :upload_original, [GeneratedCertificates::MlcCertificate, GeneratedCertificates::DocOfComplianceCertificate] do |c|"], ["not :destroy, [GeneratedCertificates::MlcCertificate, GeneratedCertificates::DmlcCertificate] do |c|"]]
-    #store in hash with array in can, array in cannot, array in an array if has condition in text.
 
       new_counter = 0
     if check_slug == nil
@@ -142,7 +128,7 @@ module CanCanCanSee
         array_of_cannot = []
 
         #establish cannot
-        cannot_abilities = all_text[roles[new_counter]].scan(/cannot(.*)($|[ do])/)
+        cannot_abilities = all_text[roles[new_counter]].scan(/cannot (.*)($|[ do])/)
 
         cannot_abilities.each do |cannot_ability|
           cannot_ability = cannot_ability[0]
@@ -163,15 +149,19 @@ module CanCanCanSee
 
   #public methods
 
-  def self.all_roles(desired_slug=nil)
-    initiate_gem
-    return MY_GLOBAL_HOLDER_OF_ABILITY[desired_slug].keys
 
+
+  def self.all_roles(desired_slug="all")
+    initiate_gem
+    if desired_slug == "all"
+      return MY_GLOBAL_HOLDER_OF_ABILITY.keys
+    else
+      return MY_GLOBAL_HOLDER_OF_ABILITY[desired_slug].keys
+    end
   end
 
   def self.establish_variable
     initiate_gem
-
   end
 
   def self.all_abilities(desired_slug="all")
@@ -183,4 +173,38 @@ module CanCanCanSee
     end
   end
 
+  def self.pretty_print_abilities(slug="all")
+    initiate_gem
+    if slug == "all"
+      @current_slug_abilities = MY_GLOBAL_HOLDER_OF_ABILITY
+      @current_slug_abilities.each do |key, value|
+        print "\n\n"
+        print "Slug: #{key}\n\n"
+        value.each do |role_key, role_value|
+          print "\n\n"
+          print "  Role: #{role_key}\n\n"
+          role_value.each do |can, can_value|
+            print "    #{can}\n"
+            can_value = can_value.sort
+            can_value.each do |can_value_element|
+              print "      #{can_value_element}\n"
+            end
+          end
+        end
+      end
+    else
+      @current_slug_abilities = MY_GLOBAL_HOLDER_OF_ABILITY[slug]
+      @current_slug_abilities.each do |key, value|
+        print "\n\n"
+        print "Role: #{key}\n"
+        value.each do |can, can_value|
+          print "  #{can}\n"
+          can_value = can_value.sort
+          can_value.each do |can_value_element|
+            print "    #{can_value_element}\n"
+          end
+        end
+      end
+    end
+  end
 end

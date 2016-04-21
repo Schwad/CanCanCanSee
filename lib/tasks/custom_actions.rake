@@ -8,7 +8,7 @@ namespace :cancancansee do
 
     @current_slug_abilities.each do |key, value|
       print "\n\n"
-      print "Role: #{key}:\n"
+      print "Role: #{key}\n"
       value.each do |can, can_value|
         print "  #{can}\n"
         can_value = can_value.sort
@@ -27,16 +27,16 @@ namespace :cancancansee do
       print "\n\n"
       print "Slug: #{key}\n\n"
       value.each do |role_key, role_value|
-        print "  Role: #{role_key}:\n\n"
+        print "\n\n"
+        print "  Role: #{role_key}\n\n"
         role_value.each do |can, can_value|
-          print "  #{can}\n"
+          print "    #{can}\n"
           can_value = can_value.sort
           can_value.each do |can_value_element|
-            print "    #{can_value_element}\n"
+            print "      #{can_value_element}\n"
           end
         end
       end
     end
-
   end
 end
