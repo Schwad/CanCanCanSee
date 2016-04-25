@@ -1,5 +1,4 @@
 require "CanCanCanSee/version"
-require 'pry'
 
 module CanCanCanSee
   require 'CanCanCanSee/railtie' if defined?(Rails)
