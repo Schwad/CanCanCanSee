@@ -1,7 +1,6 @@
 require "CanCanCanSee/version"
 
 module CanCanCanSee
-  require 'CanCanCanSee/railtie' if defined?(Rails)
 
   MY_GLOBAL_HOLDER_OF_ABILITY = Hash.new
 
